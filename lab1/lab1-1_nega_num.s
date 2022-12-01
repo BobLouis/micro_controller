@@ -1,0 +1,43 @@
+LIST p=18f4520
+
+    #include<p18f4520.inc>
+
+	CONFIG OSC = INTIO67
+
+	CONFIG WDT = OFF
+
+	org 0x00
+
+	
+
+initial:
+
+    MOVLW 0xFc  
+
+    MOVWF 0x00
+
+
+
+;init 0x00 0x01 0x02
+
+MOVLW 0x7C  ; load 0x7c to wreg
+MOVWF 0x00  ; wreg to 0x00
+
+MOVLW 0x04	; load 0x04 to wreg
+MOVWF 0x01  ; wreg 0x04 to 0x01 
+
+MOVLW 0xFF  ; 0x02 => 0xff
+MOVWF 0x02
+
+COMF 0x00,F  ;F => store the complement to origin address
+INCF 0x00,F  ;F => increase 1 and store back to origin address
+
+
+
+MOVLW 0x01
+MOVWF 0x03
+MOVF 0x01,W  ;move 0x01 to wreg
+CPFSEQ 0x00  ;if 0x00 == 0x01(wreg) skip next line
+MOVFF 0x03,0x02
+
+end

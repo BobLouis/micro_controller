@@ -1,0 +1,38 @@
+_isprime:
+    MOVLW 0x02
+    MOVWF 0x03
+    CPFSEQ 0x01
+    GOTO FIND
+    GOTO ISPRIME
+    
+FIND:
+    MOVFF 0x001, 0x011
+    MOVF 0x03, W
+    rcall RECURSIVE
+    MOVF 0x11, W
+    BTFSC STATUS, 2
+    GOTO NOTPRIME
+    INCF 0x03
+    MOVF 0x03, W
+    CPFSEQ 0x01
+    GOTO FIND
+    GOTO ISPRIME
+    
+RECURSIVE:
+    MOVF 0x03, W
+    SUBWF 0x11, 1
+    CPFSLT 0x11
+    rcall RECURSIVE
+    RETURN
+    
+ISPRIME:
+    MOVLW 0x01
+    MOVFF  WREG, 0x01
+    GOTO FINISH
+
+NOTPRIME:
+    MOVLW 0xFF
+    MOVFF  WREG, 0x01
+    
+FINISH:
+    RETURN

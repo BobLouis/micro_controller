@@ -1,0 +1,44 @@
+LIST p=18f4520
+
+    #include<p18f4520.inc>
+
+	CONFIG OSC = INTIO67
+
+	CONFIG WDT = OFF
+
+	org 0x00
+
+MOVLW 0x12
+MOVWF 0x10
+MOVLW 0x34
+MOVWF 0x11
+
+MOVLW 0x66
+MOVWF 0x20
+MOVLW 0x66
+MOVWF 0x21
+
+MOVF 0x21 ,0
+ADDWF 0x11
+MOVF 0x20 ,0
+ADDWFC 0x10
+
+MOVF 0x11 ,0
+DAW
+MOVWF 0x01
+BC inc1
+L1
+MOVF 0x10 ,0
+DAW
+MOVWF 0x00
+goto finish
+
+inc1:
+INCF 0x10
+goto L1
+
+finish:
+
+	
+nop
+end

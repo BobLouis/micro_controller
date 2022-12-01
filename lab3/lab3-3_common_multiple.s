@@ -1,0 +1,88 @@
+LIST p=18f4520
+
+    #include<p18f4520.inc>
+
+	CONFIG OSC = INTIO67
+
+	CONFIG WDT = OFF
+
+	org 0x00
+setup:
+
+    MOVLW 0xF5    ; A
+    MOVWF 0x10    ; 
+    MOVLW 0X5A    ; B
+    MOVWF 0x11    ;
+
+    MOVF 0x10     ;load A
+    CPFSGT 0x11  ;skip if f > w
+    goto B1
+
+    MOVFF 0x11, 0x12
+    MOVFF 0x10, 0x13
+    goto start
+B1:
+    MOVFF 0x10, 0x12
+    MOVFF 0x11, 0x13
+
+start:
+    MOVFF 0x12, 0x03
+    MOVFF 0x13, 0x05
+
+loop:
+    MOVF 0x13,0
+    ADDWF 0x05
+B2:
+    BC C1
+    
+    ;compare number
+    MOVF 0x02,0  ;
+    CPFSLT 0x04  ;skip if 0x04 < 0x02
+    goto B3      ; 0x04 >= 0x02
+    goto loop    ; 0x04 < 0x02
+
+B3: ; 0x04 >= 0x02
+    MOVF 0x02    ;
+    CPFSEQ 0x04  ;skip if 0x04 == 0x02
+    goto Big_add ;0x04 > 0x02
+    goto B5      ;0x04 == 0x02
+
+B5: ;0x04 == 0x02
+    MOVF 0x03,0  ;
+    CPFSLT 0x05  ;skip if 0x05 < 0x03
+    goto B6      ; 0x05 >= 0x03
+    goto loop    ; 0x05 < 0x03
+
+B6: ; 0x05 >= 0x03
+    MOVF 0x03,0  ;
+    CPFSEQ 0x05    ; skip if 0x05 = 0x03
+    goto Big_add   ; 0x05 > 0x03
+    goto finish    ; 0x05 = 0x03
+
+Big_add:
+    MOVF 0x12,0
+    ADDWF 0x03   
+B7:
+    BC C2
+    goto loop
+
+C1: 
+    INCF 0x04
+    goto B2
+
+C2: 
+    INCF 0x02
+    goto B7
+    
+
+
+
+finish: 
+
+    MOVFF 0x02, 0x00
+    MOVFF 0x03, 0x01
+nop
+end
+
+    
+
